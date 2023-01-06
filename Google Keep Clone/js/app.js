@@ -1,6 +1,6 @@
 class App {
   constructor() {
-    this.notes = [];
+    this.notes = JSON.parselocalStorage.getItem("notes") || [];
     this.title = "";
     this.text = "";
     this.id = "";
@@ -16,15 +16,40 @@ class App {
     this.$modalTitle = document.querySelector(".modal-title");
     this.$modalText = document.querySelector(".modal-text");
     this.$modalCloseButton = document.querySelector(".modal-close-button");
+    this.$colorTooltip = document.querySelector("#color-tooltip");
 
+    this.render();
     this.addEventListeners();
   }
 
   addEventListeners() {
     document.body.addEventListener("click", (event) => {
       this.handleFormClick(event);
-      this.openModal(event);
       this.selectNote(event);
+      this.openModal(event);
+      this.deleteNote(event);
+    });
+
+    document.body.addEventListener("mouseover", (event) => {
+      this.openTooltip(event);
+    });
+    document.body.addEventListener("mouseout", (event) => {
+      this.closeTooltip(event);
+    });
+
+    this.$colorTooltip.addEventListener("mouseover", function () {
+      this.style.display = "flex";
+    });
+
+    this.$colorTooltip.addEventListener("mouseout", function () {
+      this.style.display = "none";
+    });
+
+    this.$colorTooltip.addEventListener("click", (event) => {
+      const color = event.target.dataset.color;
+      if (color) {
+        this.editNoteColor(color);
+      }
     });
 
     this.$form.addEventListener("submit", (event) => {
@@ -37,10 +62,12 @@ class App {
         this.addNote({ title, text });
       }
     });
+
     this.$formCloseButton.addEventListener("click", (event) => {
       event.stopPropagation();
       this.closeForm();
     });
+
     this.$modalCloseButton.addEventListener("click", (event) => {
       this.closeModal(event);
     });
@@ -77,15 +104,33 @@ class App {
   }
 
   openModal(event) {
+    if (event.target.matches(".toolbar-delete")) return;
+
     if (event.target.closest(".note")) {
       this.$modal.classList.toggle("open-modal");
       this.$modalTitle.value = this.title;
       this.$modalText.value = this.text;
     }
   }
+
   closeModal(event) {
     this.editNote();
     this.$modal.classList.toggle("open-modal");
+  }
+
+  openTooltip(event) {
+    if (!event.target.matches(".toolbar-color")) return;
+    this.id = event.target.dataset.id;
+    const noteCoords = event.target.getBoundingClientRect();
+    const horizontal = noteCoords.left;
+    const vertical = window.scrollY - 20;
+    this.$colorTooltip.style.transform = `translate(${horizontal}px, ${vertical}px)`;
+    this.$colorTooltip.style.display = "flex";
+  }
+
+  closeTooltip(event) {
+    if (!event.target.matches(".toolbar-color")) return;
+    this.$colorTooltip.style.display = "none";
   }
 
   addNote({ title, text }) {
@@ -96,25 +141,48 @@ class App {
       id: this.notes.length > 0 ? this.notes[this.notes.length - 1].id + 1 : 1,
     };
     this.notes = [...this.notes, newNote];
-    this.displayNotes();
+    this.render();
     this.closeForm();
   }
+
   editNote() {
     const title = this.$modalTitle.value;
     const text = this.$modalText.value;
     this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, title, text } : note
     );
-    this.displayNotes();
+    this.render();
+  }
+
+  editNoteColor(color) {
+    this.notes = this.notes.map((note) =>
+      note.id === Number(this.id) ? { ...note, color } : note
+    );
+    this.render();
   }
 
   selectNote(event) {
     const $selectedNote = event.target.closest(".note");
     if (!$selectedNote) return;
-    const [$noteTitle, $noteText] = $selectedNote.childre;
+    const [$noteTitle, $noteText] = $selectedNote.children;
     this.title = $noteTitle.innerText;
     this.text = $noteText.innerText;
     this.id = $selectedNote.dataset.id;
+  }
+  deleteNote(event) {
+    event.stopPropagation();
+    if (!event.target.matches(".toolbar-delete")) return;
+    const id = event.target.dataset.id;
+    this.notes.filter((note) => note.id !== Number(id));
+    this.render();
+  }
+  render() {
+    this.saveNotes();
+    this.displayNotes();
+  }
+
+  saveNotes() {
+    localStorage.setItem("notes", JSON.stringify(this.notes));
   }
 
   displayNotes() {
@@ -131,8 +199,12 @@ class App {
           <div class="note-text">${note.text}</div>
           <div class="toolbar-container">
             <div class="toolbar">
-              <img class="toolbar-color" src="https://icon.now.sh/palette">
-              <img class="toolbar-delete" src="https://icon.now.sh/delete">
+              <img class="toolbar-color" data-id=${
+                note.id
+              } src="https://icon.now.sh/palette">
+              <img data-id=${
+                note.id
+              } class="toolbar-delete" src="https://icon.now.sh/delete">
             </div>
           </div>
         </div>
