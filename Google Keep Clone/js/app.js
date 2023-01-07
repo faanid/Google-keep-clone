@@ -1,6 +1,6 @@
 class App {
   constructor() {
-    this.notes = JSON.parselocalStorage.getItem("notes") || [];
+    this.notes = [];
     this.title = "";
     this.text = "";
     this.id = "";
@@ -18,7 +18,6 @@ class App {
     this.$modalCloseButton = document.querySelector(".modal-close-button");
     this.$colorTooltip = document.querySelector("#color-tooltip");
 
-    this.render();
     this.addEventListeners();
   }
 
@@ -33,6 +32,7 @@ class App {
     document.body.addEventListener("mouseover", (event) => {
       this.openTooltip(event);
     });
+
     document.body.addEventListener("mouseout", (event) => {
       this.closeTooltip(event);
     });
@@ -120,7 +120,7 @@ class App {
 
   openTooltip(event) {
     if (!event.target.matches(".toolbar-color")) return;
-    this.id = event.target.dataset.id;
+    this.id = event.target.nextElementSibling.dataset.id;
     const noteCoords = event.target.getBoundingClientRect();
     const horizontal = noteCoords.left;
     const vertical = window.scrollY - 20;
@@ -141,7 +141,7 @@ class App {
       id: this.notes.length > 0 ? this.notes[this.notes.length - 1].id + 1 : 1,
     };
     this.notes = [...this.notes, newNote];
-    this.render();
+    this.displayNotes();
     this.closeForm();
   }
 
@@ -151,14 +151,14 @@ class App {
     this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, title, text } : note
     );
-    this.render();
+    this.displayNotes();
   }
 
   editNoteColor(color) {
     this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, color } : note
     );
-    this.render();
+    this.displayNotes();
   }
 
   selectNote(event) {
@@ -169,20 +169,13 @@ class App {
     this.text = $noteText.innerText;
     this.id = $selectedNote.dataset.id;
   }
+
   deleteNote(event) {
     event.stopPropagation();
     if (!event.target.matches(".toolbar-delete")) return;
     const id = event.target.dataset.id;
-    this.notes.filter((note) => note.id !== Number(id));
-    this.render();
-  }
-  render() {
-    this.saveNotes();
+    this.notes = this.notes.filter((note) => note.id !== Number(id));
     this.displayNotes();
-  }
-
-  saveNotes() {
-    localStorage.setItem("notes", JSON.stringify(this.notes));
   }
 
   displayNotes() {
