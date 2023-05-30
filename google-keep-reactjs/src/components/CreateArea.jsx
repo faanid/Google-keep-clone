@@ -18,7 +18,11 @@ function CreateArea({ submitButton, onAdd }) {
 
   function submitButton(event) {
     onAdd(note);
-    event.preventDefault();
+    setNote({
+      title: "",
+      content: "",
+    });
+    event.preventDefault(event);
   }
 
   return (

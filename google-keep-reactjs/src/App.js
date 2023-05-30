@@ -6,10 +6,19 @@ import CreateArea from "./components/CreateArea";
 function App(props) {
   const [notes, setNotes] = useState([]);
   function addNote(newNote) {
-    setNotes((prevValue) => {
-      return [...prevValue, newNote];
+    setNotes((preValue) => {
+      return [...preValue, newNote];
     });
   }
+
+  function deleteNotes(id) {
+    setNotes((prevValue) => {
+      return (preValue) => {
+        return [...preValue.filter((note, index) => index !== id)];
+      };
+    });
+  }
+
   return (
     <div>
       <Header />
@@ -20,6 +29,7 @@ function App(props) {
           id={index}
           title={note.title}
           content={note.content}
+          onDelete={deleteNotes}
         />
       ))}
     </div>
