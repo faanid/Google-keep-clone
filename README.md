@@ -1,6 +1,6 @@
 
 # Google Keep Clone
-Built with Reactjs and Javascript in two separate files!
+This project is a clone of Google Keep, a note-taking application developed by Google. It was built using ReactJs and Javascript in two separate files!
 
 ## 🛠 Skills
 Javascript, Reactjs, HTML, CSS
