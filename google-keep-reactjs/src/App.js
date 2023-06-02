@@ -7,19 +7,17 @@ import Count from "./components/Count";
 
 function App(props) {
   const [notes, setNotes] = useState([]);
-  function addNote(newNote) {
+  const addNote = (newNote) => {
     setNotes((preValue) => {
       return [...preValue, newNote];
     });
-  }
+  };
 
-  function deleteNotes(id) {
+  const deleteNotes = (id) => {
     setNotes((prevValue) => {
-      return (preValue) => {
-        return [...preValue.filter((note, index) => index !== id)];
-      };
+      return prevValue.filter((note, index) => index !== id);
     });
-  }
+  };
 
   return (
     <div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { IoIosAdd } from "react-icons/io";
+import { IoMdAdd } from "react-icons/io";
 
-function CreateArea({ submitButton, onAdd }) {
+function CreateArea({ onAdd }) {
   const [isExpanded, setExpended] = useState(false);
 
   const [note, setNote] = useState({
@@ -9,28 +9,26 @@ function CreateArea({ submitButton, onAdd }) {
     content: "",
   });
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setNote((preValue) => {
-      return {
-        ...preValue,
-        [name]: value,
-      };
-    });
-  }
+    setNote((preValue) => ({
+      ...preValue,
+      [name]: value,
+    }));
+  };
 
-  function submitButton(event) {
+  const submitButton = (event) => {
     onAdd(note);
     setNote({
       title: "",
       content: "",
     });
     event.preventDefault(event);
-  }
+  };
 
-  function handleExpanded() {
+  const handleExpanded = () => {
     setExpended(true);
-  }
+  };
 
   return (
     <div>
@@ -55,7 +53,7 @@ function CreateArea({ submitButton, onAdd }) {
           ></textarea>
         </p>
         <button onClick={submitButton}>
-          <IoIosAdd size={35} />
+          <IoMdAdd size={35} />
         </button>
       </form>
     </div>
