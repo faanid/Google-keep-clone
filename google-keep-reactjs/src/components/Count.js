@@ -2,8 +2,8 @@ import React from "react";
 
 function Count(count) {
   return (
-    <div>
-      <h3>{count}</h3>
+    <div countName="count">
+      <h4>{count}</h4>
     </div>
   );
 }

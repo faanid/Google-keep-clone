@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { IoIosAdd } from "react-icons/io";
 
 function CreateArea({ submitButton, onAdd }) {
+  const [isExpanded, setExpended] = useState(false);
+
   const [note, setNote] = useState({
     title: "",
     content: "",
@@ -25,25 +28,35 @@ function CreateArea({ submitButton, onAdd }) {
     event.preventDefault(event);
   }
 
+  function handleExpanded() {
+    setExpended(true);
+  }
+
   return (
     <div>
       <form>
-        <input
-          value={note.title}
-          type="text"
-          placeholder="Title"
-          name="title"
-          onChange={handleChange}
-        />
+        {isExpanded && (
+          <input
+            value={note.title}
+            type="text"
+            placeholder="Title"
+            name="title"
+            onChange={handleChange}
+            rows={isExpanded ? 3 : 1}
+          />
+        )}
         <p>
           <textarea
             value={note.content}
+            onClick={handleExpanded}
             name="content"
             placeholder="Take a note..."
             onChange={handleChange}
           ></textarea>
         </p>
-        <button onClick={submitButton}>Add</button>
+        <button onClick={submitButton}>
+          <IoIosAdd size={35} />
+        </button>
       </form>
     </div>
   );
