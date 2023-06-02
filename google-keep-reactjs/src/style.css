@@ -29,6 +29,7 @@ body{
 }
 
 form{
+    width:50%;
     position:relative;
     margin:32px auto 50px auto;
     background: #fff;
@@ -49,7 +50,7 @@ form input{
 }
 
 form textarea{
-    width:100%;
+    /* width:100%; */
     border:none;
     padding:4px 10px;
     outline:none;
