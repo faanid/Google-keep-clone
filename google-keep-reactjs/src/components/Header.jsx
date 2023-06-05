@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Switch } from "@headlessui/react";
+import "../style.css";
 
 function Header(props) {
   const [enabled, setEnabled] = useState(false);
@@ -21,6 +22,8 @@ function Header(props) {
           enabled ? "bg-blue-600" : "bg-gray-200"
         } relative inline-flex h-6 w-11 items-center rounded-full`}
       >
+        <input type="checkbox" id="switch" />
+        <label for="switch">Toggle</label>
         <span className="sr-only">Enable notifications</span>
         <span
           className={`${
