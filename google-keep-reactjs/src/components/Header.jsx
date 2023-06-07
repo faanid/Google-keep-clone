@@ -1,10 +1,12 @@
 import React from "react";
 import { useState } from "react";
 import { Switch } from "@headlessui/react";
-import "../style.css";
+import "../styles/style.css";
+import Container from "./Container";
+import "tailwindcss/tailwind.css";
 
 function Header(props) {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(true);
   const logo = (
     <img
       src="https://www.gstatic.com/images/branding/product/1x/keep_2020q4_48dp.png"
@@ -15,22 +17,25 @@ function Header(props) {
     <div className="header">
       {logo}
       <h3>Keep</h3>
-      <Switch
-        checked={enabled}
-        onChange={setEnabled}
-        className={`${
-          enabled ? "bg-blue-600" : "bg-gray-200"
-        } relative inline-flex h-6 w-11 items-center rounded-full`}
-      >
-        <input type="checkbox" id="switch" />
-        <label for="switch">Toggle</label>
-        <span className="sr-only">Enable notifications</span>
-        <span
-          className={`${
-            enabled ? "translate-x-6" : "translate-x-1"
-          } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-        />
-      </Switch>
+      <Container>
+        <Switch.Group as="div" className="flex items-center space-x-4">
+          <Switch.Label>Enabled message</Switch.Label>
+          <Switch
+            as="button"
+            checked={enabled}
+            onChange={setEnabled}
+            className={`${enabled ? "bg-green-400" : "bg-gray-200"} `}
+          >
+            {({ checked }) => (
+              <span
+                className={`${
+                  checked ? "translate-x-6" : "translate-x-0"
+                } inline-bock w- h-5 transition duration-200 ease-in-out transform bg-white rounded-full`}
+              />
+            )}
+          </Switch>
+        </Switch.Group>
+      </Container>
     </div>
   );
 }
